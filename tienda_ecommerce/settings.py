@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,17 +21,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", "clave-dev-temporal")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = os.environ.get("DEBUG", "False") == "True"
-DEBUG= True
-ALLOWED_HOSTS = []
-# ALLOWED_HOSTS = [
-#     "127.0.0.1",
-#     "localhost",
-#     "e-commerce-django-gbcs.onrender.com",
-# ]
+
+DEBUG= False
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "e-commerce-django-gbcs.onrender.com",
+]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://e-commerce-django-gbcs.onrender.com",
@@ -91,18 +90,23 @@ WSGI_APPLICATION = 'tienda_ecommerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# DATABASES = {
-#     "default": dj_database_url.config(
-#         default="postgresql://postgres:postgres@localhost:5432/novastore",
-#         conn_max_age=600,
-#     )
-# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'libros.db'
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get("NAME"),
+        'USER': os.environ.get("USER"),
+        'PASSWORD': os.environ.get("PASSWORD"),
+        'HOST': os.environ.get("HOST"),
+        'PORT': os.environ.get("PORT")
     }
 }
+os.environ.get("DATABASE_URL")
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'libros.db'
+#     }
+# }
 
 
 # Password validation
