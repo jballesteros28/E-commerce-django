@@ -30,7 +30,7 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
-    ".onrender.com",
+    "e-commerce-django-gbcs.onrender.com",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
