@@ -34,7 +34,7 @@ ALLOWED_HOSTS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://*e-commerce-django-gbcs.onrender.com",
+    "https://e-commerce-django-gbcs.onrender.com",
 ]
 
 # Application definition
