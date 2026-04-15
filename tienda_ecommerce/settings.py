@@ -85,6 +85,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tienda_ecommerce.wsgi.application'
 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
