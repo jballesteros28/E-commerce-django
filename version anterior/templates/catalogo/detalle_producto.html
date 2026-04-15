@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}{{ producto.nombre }} | NovaStore{% endblock %}
+{% block meta_description %}Detalle del producto {{ producto.nombre }} en NovaStore.{% endblock %}
+
+{% block contenido %}
+<section class="container">
+  <div class="page-header glass-panel">
+    <span class="page-eyebrow">Detalle de producto</span>
+    <h1 class="page-title">{{ producto.nombre }}</h1>
+    <p class="page-text">
+      Revisa la información del producto y decide si quieres agregarlo al carrito o guardarlo en favoritos.
+    </p>
+  </div>
+
+  <div class="detail-grid">
+    <div class="glass-card detail-media product-media">
+      <img src="{% static 'img/juan.jpg' %}" alt="{{ producto.nombre }}">
+    </div>
+
+    <div class="glass-card detail-content">
+      <div class="detail-meta">
+        <span class="detail-pill">Plataforma: {{ producto.plataforma }}</span>
+        <span class="detail-pill">Precio: ${{ producto.precio }}</span>
+      </div>
+
+      <p class="page-text">
+        Producto disponible dentro del catálogo de la tienda. Puedes guardarlo para más tarde o sumarlo directamente al carrito.
+      </p>
+
+      <div class="product-actions mt-4">
+        <a href="{% url 'agregar_al_carrito' producto.id %}" class="btn btn-dark btn-pill">
+          Agregar al carrito
+        </a>
+
+        {% if user.is_authenticated %}
+          {% if es_favorito %}
+            <form method="post" action="{% url 'eliminar_de_favoritos' producto.id %}" class="inline-form">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-danger btn-pill">
+                Quitar de favoritos
+              </button>
+            </form>
+          {% else %}
+            <form method="post" action="{% url 'agregar_a_favoritos' producto.id %}" class="inline-form">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-secondary btn-pill">
+                Agregar a favoritos
+              </button>
+            </form>
+          {% endif %}
+        {% endif %}
+
+        <a href="{% url 'inicio_producto' %}" class="btn btn-outline-secondary btn-pill">
+          Volver al catálogo
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

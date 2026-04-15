@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Carrito | NovaStore{% endblock %}
+{% block meta_description %}Consulta y gestiona los productos agregados a tu carrito.{% endblock %}
+
+{% block contenido %}
+<section class="container">
+  <div class="page-header glass-panel">
+    <span class="page-eyebrow">Carrito</span>
+    <h1 class="page-title">Tus productos seleccionados</h1>
+    <p class="page-text">
+      Ajusta cantidades, elimina productos o continúa explorando el catálogo.
+    </p>
+  </div>
+
+  {% if items %}
+    <div class="table-shell">
+      <div class="table-responsive">
+        <table class="table custom-table align-middle">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Plataforma</th>
+              <th>Cantidad</th>
+              <th>Precio</th>
+              <th>Subtotal</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+              <tr>
+                <td>{{ item.juego.nombre }}</td>
+                <td>{{ item.juego.plataforma }}</td>
+                <td>{{ item.cantidad }}</td>
+                <td>${{ item.juego.precio }}</td>
+                <td>${{ item.subtotal }}</td>
+                <td class="text-end">
+                  <div class="product-actions justify-content-end">
+                    <form method="post" action="{% url 'agregar_al_carrito' item.juego.id %}" class="inline-form">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-outline-danger btn-sm btn-pill">
+                        <i class="fa-solid fa-circle-plus"></i>
+                      </button>
+                    </form>
+                    <form method="post" action="{% url 'eliminar_del_carrito' item.juego.id %}" class="inline-form">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-outline-danger btn-sm btn-pill">
+                        <i class="fa-solid fa-circle-minus"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="glass-panel page-header mt-4">
+      <span class="page-eyebrow">Resumen</span>
+      <h2 class="page-title">Total del carrito</h2>
+      <p class="page-text">Productos: {{ carrito.total_items }} | Total: ${{ carrito.total_precio }}</p>
+
+      <div class="form-actions mt-4">
+        <a href="{% url 'inicio_producto' %}" class="btn btn-outline-secondary btn-pill">
+          Seguir comprando
+        </a>
+        <a href="{% url 'limpiar_carrito' %}" class="btn btn-outline-danger btn-pill">
+          Vaciar carrito
+        </a>
+      </div>
+    </div>
+  {% else %}
+    <div class="empty-shell container-narrow">
+      <h2>Tu carrito está vacío</h2>
+      <p>Agrega productos desde el catálogo para verlos aquí.</p>
+      <a href="{% url 'inicio_producto' %}" class="btn btn-dark btn-pill">Ir al catálogo</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

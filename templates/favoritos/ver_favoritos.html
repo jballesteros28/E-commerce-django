@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Favoritos | NovaStore{% endblock %}
+{% block meta_description %}Consulta tus videojuegos favoritos guardados en NovaStore.{% endblock %}
+
+{% block contenido %}
+<section class="container">
+  <div class="page-header glass-panel">
+    <span class="page-eyebrow">Favoritos</span>
+    <h1 class="page-title">Tus juegos guardados</h1>
+    <p class="page-text">
+      Guarda productos para revisarlos más tarde y volver a ellos cuando quieras.
+    </p>
+  </div>
+
+  {% if favoritos %}
+    <section class="product-grid">
+      {% for favorito in favoritos %}
+        <article class="glass-card product-card">
+          <div class="product-media">
+            <img src="{% static 'img/juan.jpg' %}" alt="{{ favorito.juego.nombre }}">
+          </div>
+
+          <div class="product-body">
+            <h2 class="product-title">{{ favorito.juego.nombre }}</h2>
+            <p class="product-meta">Plataforma: {{ favorito.juego.plataforma }}</p>
+            <p class="product-price">${{ favorito.juego.precio }}</p>
+          </div>
+
+          <div class="product-actions">
+            <a href="{% url 'detalle_producto' favorito.juego.id %}" class="btn btn-dark btn-pill">
+              Ver detalle
+            </a>
+
+            <form method="post" action="{% url 'eliminar_de_favoritos' favorito.juego.id %}" class="inline-form">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-danger btn-pill">
+                Quitar
+              </button>
+            </form>
+          </div>
+        </article>
+      {% endfor %}
+    </section>
+  {% else %}
+    <div class="empty-shell container-narrow">
+      <h2>No tienes favoritos todavía</h2>
+      <p>Cuando marques productos como favoritos, aparecerán aquí.</p>
+      <a href="{% url 'inicio_producto' %}" class="btn btn-dark btn-pill">Explorar catálogo</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,196 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="{{ request.session.tema|default:'light' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{% block titulo %}NovaStore | Tienda online de videojuegos{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Tienda online de videojuegos con catálogo, favoritos, carrito y cuenta de usuario.{% endblock %}">
+  <meta name="robots" content="index,follow">
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+    crossorigin="anonymous"
+  >
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/store.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="navbar navbar-expand-lg navbar-glass sticky-top">
+      <div class="container">
+        <a class="navbar-brand brand-mark" href="{% url 'home' %}">
+          <img src=" {% static 'img/favicon.ico' %} " alt="Imagen Logo" style="height: auto; width: auto;">
+        </a>
+
+        <button
+          class="navbar-toggler border-0 shadow-none"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#mainNavbar"
+          aria-controls="mainNavbar"
+          aria-expanded="false"
+          aria-label="Abrir navegación"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse pt-3 pt-lg-0" id="mainNavbar">
+          <ul class="navbar-nav align-items-lg-center gap-lg-2 me-auto">
+            <li class="nav-item">
+              <a class="nav-link nav-pill {% if request.resolver_match.url_name == 'inicio_producto' %}active{% endif %}" href="{% url 'inicio_producto' %}">
+                Catálogo
+              </a>
+            </li class="nav-item">
+          </ul>
+          <div class="nav-item nav-search-item">
+              <form class="search-form ms-lg-2 d-flex" method="get" action="{% url 'buscar_juegos' %}" role="search">
+                <input
+                  class="form-control search-input"
+                  type="search"
+                  name="q"
+                  placeholder="Buscar juegos o plataforma"
+                  aria-label="Buscar juegos"
+                  value="{{ request.GET.q|default:'' }}"
+                >
+                <button class="btn btn-outline-dark btn-pill px-3" type="submit">
+                  Buscar
+                </button>
+              </form>
+            </div>
+          <div class="navbar-actions">
+            <form method="post" action="{% url 'cambiar_tema' %}" class="theme-form">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-theme-toggle" aria-label="Cambiar tema">
+                {% if request.session.tema == 'dark' %}
+                  <i class="fa-regular fa-sun"></i>
+                {% else %}
+                  <i class="fa-regular fa-moon"></i>
+                {% endif %}
+              </button>
+            </form>
+
+            <div class="position-relative d-inline-block">
+              <a class="cart-link" href="{% url 'ver_carrito' %}" aria-label="Ver carrito">
+                <span><i class="fa-solid fa-cart-shopping"></i></span>
+                {% if carrito_total_items > 0 %}
+                  <span class="cart-badge position-absolute top-0 start-100 translate-middle rounded-pill bg-danger small">{{ carrito_total_items }}</span>
+                {% endif %}
+              </a>
+            </div>
+
+            <div class="dropdown">
+              <button
+                class="btn user-menu dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                {% if user.is_authenticated %}
+                  <img src="{% static 'img/juan.jpg' %}" alt="Perfil de {{ user.username }}" class="avatar-thumb">
+                  <span>Hola, {{ user.username }}</span>
+                {% else %}
+                  <span>Mi cuenta</span>
+                {% endif %}
+              </button>
+
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-glass">
+                {% if user.is_authenticated %}
+                  <li><a class="dropdown-item" href="{% url 'perfil_usuario' %}">Ver perfil</a></li>
+                  <li><a class="dropdown-item" href="{% url 'editar_usuario' %}">Editar datos</a></li>
+                  <li><a class="dropdown-item" href="{% url 'cambiar_password' %}">Cambiar contraseña</a></li>
+                  <li><a class="dropdown-item" href="{% url 'ver_favoritos' %}">Mis favoritos</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item text-danger" href="{% url 'logout_usuario' %}">Cerrar sesión</a></li>
+                {% else %}
+                  <li><a class="dropdown-item" href="{% url 'registro_usuario' %}">Registrarse</a></li>
+                  <li><a class="dropdown-item" href="{% url 'login_usuario' %}">Iniciar sesión</a></li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  {% if messages %}
+    <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3">
+      {% for message in messages %}
+        <div
+          class="toast align-items-center border-0 show mb-2 toast-glass
+          {% if message.tags == 'success' %}toast-success{% endif %}
+          {% if message.tags == 'error' %}toast-error{% endif %}
+          {% if message.tags == 'warning' %}toast-warning{% endif %}
+          {% if message.tags == 'info' %}toast-info{% endif %}"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <div class="d-flex">
+            <div class="toast-body">
+              {{ message }}
+            </div>
+            <button
+              type="button"
+              class="btn-close btn-close-white me-2 m-auto"
+              data-bs-dismiss="toast"
+              aria-label="Cerrar"
+            ></button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main class="site-main">
+    {% block contenido %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <h2 class="footer-title">NovaStore</h2>
+        <p class="footer-text">
+          Tienda online de videojuegos con una experiencia moderna, clara y adaptable a cualquier pantalla.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="footer-subtitle">Navegación</h3>
+        <ul class="footer-links">
+          <li><a href="{% url 'home' %}">Inicio</a></li>
+          <li><a href="{% url 'inicio_producto' %}">Catálogo</a></li>
+          <li><a href="{% url 'ver_carrito' %}">Carrito</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="footer-subtitle">Cuenta</h3>
+        <ul class="footer-links">
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'perfil_usuario' %}">Perfil</a></li>
+            <li><a href="{% url 'ver_favoritos' %}">Favoritos</a></li>
+          {% else %}
+            <li><a href="{% url 'registro_usuario' %}">Registrarse</a></li>
+            <li><a href="{% url 'login_usuario' %}">Iniciar sesión</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"
+  ></script>
+</body>
+</html>

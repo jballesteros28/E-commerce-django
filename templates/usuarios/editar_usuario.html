@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Editar perfil | NovaStore{% endblock %}
+{% block meta_description %}Actualiza los datos de tu cuenta en NovaStore.{% endblock %}
+
+{% block contenido %}
+<section class="container">
+  <div class="form-shell">
+    <span class="page-eyebrow">Cuenta</span>
+    <h1 class="page-title">{{ accion|default:'Editar perfil' }}</h1>
+    <p class="page-text">Actualiza tu información principal sin perder acceso a tu cuenta.</p>
+
+    <form method="post" novalidate class="form-grid mt-4">
+      {% csrf_token %}
+
+      <div class="form-field">
+        <label for="{{ form.username.id_for_label }}">Usuario</label>
+        <input
+          type="text"
+          name="{{ form.username.html_name }}"
+          id="{{ form.username.id_for_label }}"
+          value="{{ form.username.value|default_if_none:'' }}"
+        >
+        {% if form.username.errors %}
+          <div class="field-error">{{ form.username.errors|striptags }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field">
+        <label for="{{ form.email.id_for_label }}">Email</label>
+        <input
+          type="email"
+          name="{{ form.email.html_name }}"
+          id="{{ form.email.id_for_label }}"
+          value="{{ form.email.value|default_if_none:'' }}"
+        >
+        {% if form.email.errors %}
+          <div class="field-error">{{ form.email.errors|striptags }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-dark btn-pill">{{ accion|default:'Guardar cambios' }}</button>
+        <a href="{% url 'perfil_usuario' %}" class="btn btn-outline-secondary btn-pill">Volver al perfil</a>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

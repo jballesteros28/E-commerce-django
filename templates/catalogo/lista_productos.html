@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Catálogo | NovaStore{% endblock %}
+{% block meta_description %}Explora el catálogo de videojuegos disponibles en NovaStore.{% endblock %}
+
+{% block contenido %}
+<section class="container">
+  <div class="page-header glass-panel">
+    <span class="page-eyebrow">Catálogo</span>
+    <h1 class="page-title">Explora nuestros juegos</h1>
+    <p class="page-text">
+      Encuentra títulos por nombre, revisa sus detalles y agrégalos a favoritos o al carrito.
+    </p>
+  </div>
+
+  {% if productos %}
+    <section class="product-grid">
+      {% for producto in productos %}
+        <article class="glass-card product-card">
+          <div class="product-media">
+            <img src="{% static 'img/juan.jpg' %}" alt="{{ producto.nombre }}">
+          </div>
+
+          <div class="product-body">
+            <h2 class="product-title">{{ producto.nombre }}</h2>
+            <p class="product-meta">Plataforma: {{ producto.plataforma }}</p>
+            <p class="product-price">${{ producto.precio }}</p>
+          </div>
+
+          <div class="product-actions">
+            <a href="{% url 'detalle_producto' producto.id %}" class="btn btn-dark btn-pill">
+              Ver detalle
+            </a>
+          </div>
+        </article>
+      {% endfor %}
+    </section>
+
+    {% if productos.has_other_pages %}
+      <div class="pagination-shell">
+        <nav aria-label="Paginación del catálogo">
+          <ul class="pagination">
+            {% if productos.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ productos.previous_page_number }}">Anterior</a>
+              </li>
+            {% endif %}
+
+            {% for num in productos.paginator.page_range %}
+              {% if productos.number == num %}
+                <li class="page-item active">
+                  <span class="page-link">{{ num }}</span>
+                </li>
+              {% else %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+
+            {% if productos.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ productos.next_page_number }}">Siguiente</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="empty-shell container-narrow">
+      <h2>No hay productos disponibles</h2>
+      <p>Cuando cargues juegos en el sistema, aparecerán aquí.</p>
+      <a href="{% url 'home' %}" class="btn btn-dark btn-pill">Volver al inicio</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

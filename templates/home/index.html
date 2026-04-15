@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}NovaStore | Tienda online de videojuegos{% endblock %}
+{% block meta_description %}Explora videojuegos, agrégalos al carrito, guarda favoritos y gestiona tu cuenta en una tienda moderna, responsive y minimalista.{% endblock %}
+
+{% block contenido %}
+<section class="container">
+  <div class="hero-shell">
+    <div class="hero-grid">
+      <div>
+        <span class="page-eyebrow">Tienda de videojuegos</span>
+        <h1 class="hero-title">Juegos, catálogo y una experiencia visual premium.</h1>
+        <p class="hero-text">
+          Descubre títulos, guarda favoritos, gestiona tu carrito y navega por una tienda moderna, limpia y pensada para escritorio, tablet y móvil.
+        </p>
+
+        <div class="hero-actions">
+          <a href="{% url 'inicio_producto' %}" class="btn btn-dark btn-pill">Explorar catálogo</a>
+          {% if user.is_authenticated %}
+            <a href="{% url 'ver_favoritos' %}" class="btn btn-outline-secondary btn-pill">Ver favoritos</a>
+          {% else %}
+            <a href="{% url 'registro_usuario' %}" class="btn btn-outline-secondary btn-pill">Crear cuenta</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="hero-aside">
+        <div class="glass-card mini-stat">
+          <span class="page-eyebrow">Experiencia</span>
+          <strong>Responsive</strong>
+          <p class="mb-0 text-secondary-emphasis">Diseño adaptado a celular, tablet y escritorio sin romperse.</p>
+        </div>
+
+        <div class="glass-card mini-stat">
+          <span class="page-eyebrow">Navegación</span>
+          <strong>Sin callejones</strong>
+          <p class="mb-0 text-secondary-emphasis">Siempre hay salida hacia catálogo, carrito, cuenta, favoritos y contacto.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section-spacing">
+    <div class="page-header glass-panel">
+      <span class="page-eyebrow">Qué puedes hacer</span>
+      <h2 class="page-title">Todo lo importante, sin ruido.</h2>
+      <p class="page-text">
+        La tienda está armada para que el usuario encuentre lo que busca, entre al detalle, guarde favoritos, agregue al carrito y gestione su cuenta sin perderse.
+      </p>
+    </div>
+
+    <div class="product-grid">
+      <article class="glass-card">
+        <h3 class="product-title">Explorar catálogo</h3>
+        <p class="product-meta">Listado paginado, detalle de producto y buscador integrado.</p>
+        <div class="product-actions">
+          <a href="{% url 'inicio_producto' %}" class="btn btn-dark btn-pill">Ir al catálogo</a>
+        </div>
+      </article>
+
+      <article class="glass-card">
+        <h3 class="product-title">Guardar favoritos</h3>
+        <p class="product-meta">Cada usuario puede armar su propia lista y volver después.</p>
+        <div class="product-actions">
+          {% if user.is_authenticated %}
+            <a href="{% url 'ver_favoritos' %}" class="btn btn-dark btn-pill">Ver favoritos</a>
+          {% else %}
+            <a href="{% url 'login_usuario' %}" class="btn btn-dark btn-pill">Iniciar sesión</a>
+          {% endif %}
+        </div>
+      </article>
+
+      <article class="glass-card">
+        <h3 class="product-title">Gestionar carrito</h3>
+        <p class="product-meta">Agregar, quitar unidades y mantener una navegación clara.</p>
+        <div class="product-actions">
+          <a href="{% url 'ver_carrito' %}" class="btn btn-dark btn-pill">Abrir carrito</a>
+        </div>
+      </article>
+    </div>
+  </section>
+</section>
+{% endblock %}
