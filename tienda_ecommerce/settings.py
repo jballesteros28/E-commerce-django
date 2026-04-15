@@ -25,13 +25,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY", "clave-dev-temporal")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", "False") == "True"
-
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "e-commerce-django-gbcs.onrender.com",
-]
+# DEBUG = os.environ.get("DEBUG", "False") == "True"
+DEBUG= True
+ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = [
+#     "127.0.0.1",
+#     "localhost",
+#     "e-commerce-django-gbcs.onrender.com",
+# ]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://e-commerce-django-gbcs.onrender.com",
@@ -85,17 +86,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tienda_ecommerce.wsgi.application'
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# DATABASES = {
+#     "default": dj_database_url.config(
+#         default="postgresql://postgres:postgres@localhost:5432/novastore",
+#         conn_max_age=600,
+#     )
+# }
 DATABASES = {
-    "default": dj_database_url.config(
-        default="postgresql://postgres:postgres@localhost:5432/novastore",
-        conn_max_age=600,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'libros.db'
+    }
 }
 
 
@@ -135,9 +141,9 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-if not DEBUG:
-    STATIC_ROOT = BASE_DIR / 'staticfiles'
-    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
