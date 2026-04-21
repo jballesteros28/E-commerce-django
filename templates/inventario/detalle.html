@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}Detalle de inventario | NovaStore{% endblock %}
+
+{% block contenido %}
+<div class="container py-4">
+  <div class="page-header section-shell">
+    <span class="page-eyebrow">Inventario</span>
+    <h1 class="page-title">{{ inventario.producto.nombre }}</h1>
+    <p class="page-text">
+      Consulta el estado actual del inventario y el historial completo de movimientos del producto.
+    </p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="glass-card h-100">
+        <h2 class="footer-subtitle">Resumen</h2>
+        <div class="d-grid gap-3 mt-3">
+          <div class="detail-pill">Stock actual: {{ inventario.stock_actual }}</div>
+          <div class="detail-pill">Reservado: {{ inventario.stock_reservado }}</div>
+          <div class="detail-pill">Disponible: {{ inventario.stock_disponible }}</div>
+          <div class="detail-pill">Stock mínimo: {{ inventario.stock_minimo }}</div>
+
+          {% if inventario.stock_disponible <= 0 %}
+            <div class="detail-pill">Estado: Sin stock</div>
+          {% elif inventario.bajo_stock %}
+            <div class="detail-pill">Estado: Bajo stock</div>
+          {% else %}
+            <div class="detail-pill">Estado: Disponible</div>
+          {% endif %}
+        </div>
+
+        <div class="d-grid gap-2 mt-4">
+          <a href="{% url 'inventario:entrada' inventario.id %}" class="btn btn-soft-primary btn-pill">
+            Registrar entrada
+          </a>
+          <a href="{% url 'inventario:salida' inventario.id %}" class="btn btn-soft-secondary btn-pill">
+            Registrar salida
+          </a>
+          <a href="{% url 'inventario:ajustar' inventario.id %}" class="btn btn-soft-danger btn-pill">
+            Ajustar stock
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="table-shell">
+        <h2 class="footer-subtitle mb-3">Historial de movimientos</h2>
+        <div class="table-responsive">
+          <table class="table custom-table align-middle">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Origen</th>
+                <th>Cantidad</th>
+                <th>Anterior</th>
+                <th>Posterior</th>
+                <th>Motivo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for movimiento in movimientos %}
+                <tr>
+                  <td>{{ movimiento.created_at|date:"d/m/Y H:i" }}</td>
+                  <td>{{ movimiento.get_tipo_movimiento_display }}</td>
+                  <td>{{ movimiento.get_origen_display }}</td>
+                  <td>{{ movimiento.cantidad }}</td>
+                  <td>{{ movimiento.stock_anterior }}</td>
+                  <td>{{ movimiento.stock_posterior }}</td>
+                  <td>{{ movimiento.motivo }}</td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="7" class="text-center py-4">
+                    Todavía no hay movimientos registrados para este producto.
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <a href="{% url 'inventario:listado' %}" class="btn btn-soft-light btn-pill">
+          Volver al inventario
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

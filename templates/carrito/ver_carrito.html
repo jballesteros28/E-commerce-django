@@ -65,6 +65,9 @@
       <p class="page-text">Productos: {{ carrito.total_items }} | Total: ${{ carrito.total_precio }}</p>
 
       <div class="form-actions mt-4">
+        <a href="{% url 'ordenes:crear' %}" class="btn btn-soft-primary btn-pill">
+          Confirmar pedido
+        </a>
         <a href="{% url 'inicio_producto' %}" class="btn btn-outline-secondary btn-pill">
           Seguir comprando
         </a>

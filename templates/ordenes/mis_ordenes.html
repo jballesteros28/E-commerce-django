@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block titulo %}Mis órdenes | NovaStore{% endblock %}
+
+{% block contenido %}
+<div class="container py-4">
+  <div class="page-header section-shell">
+    <span class="page-eyebrow">Compras</span>
+    <h1 class="page-title">Mis órdenes</h1>
+    <p class="page-text">Consulta el historial de tus compras y el estado de cada pedido.</p>
+  </div>
+
+  <div class="table-shell">
+    <div class="table-responsive">
+      <table class="table custom-table align-middle">
+        <thead>
+          <tr>
+            <th>Referencia</th>
+            <th>Estado</th>
+            <th>Total</th>
+            <th>Fecha</th>
+            <th class="text-end">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for orden in ordenes %}
+            <tr>
+              <td>{{ orden.referencia }}</td>
+              <td>{{ orden.get_estado_display }}</td>
+              <td>${{ orden.total }}</td>
+              <td>{{ orden.created_at|date:"d/m/Y H:i" }}</td>
+              <td class="text-end">
+                <a href="{% url 'ordenes:detalle' orden.id %}" class="btn btn-soft-primary btn-pill btn-sm">
+                  Ver detalle
+                </a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5" class="text-center py-4">Todavía no tienes órdenes registradas.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

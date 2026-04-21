@@ -114,6 +114,10 @@
                   <li><a class="dropdown-item" href="{% url 'editar_usuario' %}">Editar datos</a></li>
                   <li><a class="dropdown-item" href="{% url 'cambiar_password' %}">Cambiar contraseña</a></li>
                   <li><a class="dropdown-item" href="{% url 'ver_favoritos' %}">Mis favoritos</a></li>
+                  <a href="{% url 'ordenes:mis_ordenes' %}" class="dropdown-item">Mis compras</a>
+                  {% if perms.inventario.can_manage_inventory %}
+                    <a href="{% url 'inventario:listado' %}" class="dropdown-item">Inventario</a>
+                  {% endif %}
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item text-danger" href="{% url 'logout_usuario' %}">Cerrar sesión</a></li>
                 {% else %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block titulo %}Detalle de orden | NovaStore{% endblock %}
+
+{% block contenido %}
+<div class="container py-4">
+  <div class="page-header section-shell">
+    <span class="page-eyebrow">Orden</span>
+    <h1 class="page-title">{{ orden.referencia }}</h1>
+    <p class="page-text">Estado actual: <strong>{{ orden.get_estado_display }}</strong></p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="glass-card h-100">
+        <h2 class="footer-subtitle">Resumen</h2>
+        <div class="d-grid gap-3 mt-3">
+          <div class="detail-pill">Subtotal: ${{ orden.subtotal }}</div>
+          <div class="detail-pill">Total: ${{ orden.total }}</div>
+          <div class="detail-pill">Estado: {{ orden.get_estado_display }}</div>
+          <div class="detail-pill">Fecha: {{ orden.created_at|date:"d/m/Y H:i" }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="table-shell">
+        <h2 class="footer-subtitle mb-3">Productos</h2>
+        <div class="table-responsive">
+          <table class="table custom-table align-middle">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Precio unitario</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in orden.items.all %}
+                <tr>
+                  <td>{{ item.nombre_producto }}</td>
+                  <td>${{ item.precio_unitario }}</td>
+                  <td>{{ item.cantidad }}</td>
+                  <td>${{ item.subtotal }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% if orden.estado == "EN_PROCESO" %}
+        <div class="alert alert-warning mt-3">
+          El pago está en proceso. El estado final se confirmará automáticamente.
+        </div>
+      {% endif %}
+
+      <div class="mt-3">
+        {% if orden.estado == "PENDIENTE" or orden.estado == "FALLIDA" %}
+          <a href="{% url 'pagos:iniciar' orden.id %}" class="btn btn-soft-primary btn-pill">
+            Pagar ahora
+          </a>
+        {% elif orden.estado == "EN_PROCESO" %}
+          <div class="field-error mt-3">
+            Esta orden tiene un pago en proceso. Espera la confirmación antes de intentar nuevamente.
+          </div>
+        {% elif orden.estado == "PAGADA" %}
+          <div class="detail-pill mt-3">
+            Esta orden ya fue pagada correctamente.
+          </div>
+        {% elif orden.estado == "CANCELADA" %}
+          <div class="field-error mt-3">
+            El intento de pago anterior falló. Puedes volver a intentarlo.
+          </div>
+        {% endif %}
+        <a href="{% url 'ordenes:mis_ordenes' %}" class="btn btn-soft-light btn-pill">
+          Volver a mis órdenes
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
