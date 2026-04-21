@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = "Crea un superusuario por defecto si no existe."
+    help = "Crea o actualiza un superusuario por defecto."
 
     def handle(self, *args, **options) -> None:
         User = get_user_model()
@@ -19,32 +19,40 @@ class Command(BaseCommand):
         if not username or not email or not password:
             self.stdout.write(
                 self.style.WARNING(
-                    "No se creó el superusuario: faltan variables de entorno "
-                    "DJANGO_SUPERUSER_USERNAME, DJANGO_SUPERUSER_EMAIL o "
-                    "DJANGO_SUPERUSER_PASSWORD."
+                    "Faltan variables de entorno para crear el superusuario."
                 )
             )
             return
 
-        user_exists = User.objects.filter(username=username).exists()
-        email_exists = User.objects.filter(email=email).exists()
+        user = User.objects.filter(username=username).first()
 
-        if user_exists or email_exists:
+        if user is None:
+            user = User.objects.filter(email=email).first()
+
+        if user is None:
+            user = User.objects.create_superuser(
+                username=username,
+                email=email,
+                password=password,
+            )
             self.stdout.write(
                 self.style.SUCCESS(
-                    "El superusuario ya existe. No se creó uno nuevo."
+                    f"Superusuario '{username}' creado correctamente."
                 )
             )
             return
 
-        User.objects.create_superuser(
-            username=username,
-            email=email,
-            password=password,
-        )
+        # Si ya existe, lo elevamos a admin real
+        user.username = username
+        user.email = email
+        user.is_staff = True
+        user.is_superuser = True
+        user.is_active = True
+        user.set_password(password)
+        user.save()
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"Superusuario '{username}' creado correctamente."
+                f"Usuario '{username}' actualizado como superusuario."
             )
         )
