@@ -6,7 +6,7 @@ class Juego(models.Model):
   precio = models.DecimalField(max_digits=10,decimal_places=2)
   plataforma = models.CharField(max_length=200)
   imagen = models.CharField(max_length=200, default="default.jpg")
-  descripcion = models.CharField(max_length=500, null=True)
+  descripcion = models.TextField(default="Sin descripción")
   
   def __str__(self) -> str:
     return f'{self.nombre }'

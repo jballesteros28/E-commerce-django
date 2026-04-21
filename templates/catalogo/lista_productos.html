@@ -25,7 +25,18 @@
           <div class="product-body">
             <h2 class="product-title">{{ producto.nombre }}</h2>
             <p class="product-meta">Plataforma: {{ producto.plataforma }}</p>
+            <p class="product-meta">Descripcion: {{ producto.descripcion }}</p>
             <p class="product-price">${{ producto.precio }}</p>
+
+            {% if producto.inventario and producto.inventario.activo_para_venta and producto.inventario.stock_disponible > 0 %}
+              {% if producto.inventario.bajo_stock %}
+                <span class="badge text-bg-warning">Últimas unidades</span>
+              {% else %}
+                <span class="badge text-bg-success">Disponible</span>
+              {% endif %}
+            {% else %}
+              <span class="badge text-bg-danger">Sin stock temporalmente</span>
+            {% endif %}
           </div>
 
           <div class="product-actions">

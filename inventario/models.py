@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import F, Q
 from django.utils import timezone
+from catalogo.models import Juego
 
 from inventario.enums import OrigenMovimientoInventario, TipoMovimientoInventario
 
@@ -21,7 +22,7 @@ class InventarioProducto(models.Model):
     """
 
     producto = models.OneToOneField(
-        "catalogo.juego",
+        Juego,
         on_delete=models.CASCADE,
         related_name="inventario",
         verbose_name="Producto",

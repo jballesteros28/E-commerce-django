@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}Reservar stock | NovaStore{% endblock %}
+
+{% block contenido %}
+<div class="container py-4">
+  <div class="form-shell">
+    <div class="page-header p-0 mb-4">
+      <span class="page-eyebrow">Inventario</span>
+      <h1 class="page-title">Reservar stock</h1>
+      <p class="page-text">
+        Producto: <strong>{{ inventario.producto.nombre }}</strong>
+      </p>
+    </div>
+
+    <form method="post" class="form-grid">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="field-error">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="form-field">
+        <label for="{{ form.cantidad.id_for_label }}">{{ form.cantidad.label }}</label>
+        {{ form.cantidad }}
+        {% if form.cantidad.errors %}
+          <div class="field-error">{{ form.cantidad.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field">
+        <label for="{{ form.motivo.id_for_label }}">{{ form.motivo.label }}</label>
+        {{ form.motivo }}
+        {% if form.motivo.errors %}
+          <div class="field-error">{{ form.motivo.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-field">
+        <label for="{{ form.referencia_externa.id_for_label }}">{{ form.referencia_externa.label }}</label>
+        {{ form.referencia_externa }}
+        {% if form.referencia_externa.errors %}
+          <div class="field-error">{{ form.referencia_externa.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-soft-primary btn-pill">Guardar reserva</button>
+        <a href="{% url 'inventario:detalle' inventario.id %}" class="btn btn-soft-light btn-pill">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

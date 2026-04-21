@@ -23,16 +23,32 @@
       <div class="detail-meta">
         <span class="detail-pill">Plataforma: {{ producto.plataforma }}</span>
         <span class="detail-pill">Precio: ${{ producto.precio }}</span>
+
+        {% if producto.inventario and producto.inventario.activo_para_venta and producto.inventario.stock_disponible > 0 %}
+          {% if producto.inventario.bajo_stock %}
+            <span class="detail-pill">Estado: Últimas unidades</span>
+          {% else %}
+            <span class="detail-pill">Estado: Disponible</span>
+          {% endif %}
+        {% else %}
+          <span class="detail-pill">Estado: Sin stock temporalmente</span>
+        {% endif %}
       </div>
 
       <p class="page-text">
-        Producto disponible dentro del catálogo de la tienda. Puedes guardarlo para más tarde o sumarlo directamente al carrito.
+        {{ producto.descripcion }}
       </p>
 
       <div class="product-actions mt-4">
-        <a href="{% url 'agregar_al_carrito' producto.id %}" class="btn btn-dark btn-pill">
-          Agregar al carrito
-        </a>
+        {% if producto.inventario and producto.inventario.activo_para_venta and producto.inventario.stock_disponible > 0 %}
+          <a href="{% url 'agregar_al_carrito' producto.id %}" class="btn btn-dark btn-pill">
+            Agregar al carrito
+          </a>
+        {% else %}
+          <button type="button" class="btn btn-soft-light btn-pill" disabled>
+            Sin stock temporalmente
+          </button>
+        {% endif %}
 
         {% if user.is_authenticated %}
           {% if es_favorito %}

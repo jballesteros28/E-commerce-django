@@ -4,10 +4,6 @@ from django import forms
 
 
 class MovimientoInventarioForm(forms.Form):
-    """
-    Formulario base para entradas y salidas.
-    """
-
     cantidad = forms.IntegerField(
         min_value=1,
         label="Cantidad",
@@ -42,10 +38,6 @@ class MovimientoInventarioForm(forms.Form):
 
 
 class AjusteInventarioForm(forms.Form):
-    """
-    Formulario para ajustar el stock a un valor exacto.
-    """
-
     nuevo_stock = forms.IntegerField(
         min_value=0,
         label="Nuevo stock",
@@ -74,6 +66,97 @@ class AjusteInventarioForm(forms.Form):
             attrs={
                 "class": "form-control",
                 "placeholder": "Ejemplo: auditoría marzo 2026",
+            }
+        ),
+    )
+
+
+class AjusteStockMinimoForm(forms.Form):
+    nuevo_stock_minimo = forms.IntegerField(
+        min_value=0,
+        label="Nuevo stock mínimo",
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Ingrese el nuevo stock mínimo",
+            }
+        ),
+    )
+    motivo = forms.CharField(
+        max_length=255,
+        label="Motivo",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Motivo del ajuste de stock mínimo",
+            }
+        ),
+    )
+
+
+class ReservaStockForm(forms.Form):
+    cantidad = forms.IntegerField(
+        min_value=1,
+        label="Cantidad a reservar",
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Ingrese la cantidad a reservar",
+            }
+        ),
+    )
+    motivo = forms.CharField(
+        max_length=255,
+        label="Motivo",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Ejemplo: pedido pendiente, bloqueo interno, etc.",
+            }
+        ),
+    )
+    referencia_externa = forms.CharField(
+        max_length=100,
+        required=False,
+        label="Referencia externa",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Ejemplo: orden #123",
+            }
+        ),
+    )
+
+
+class LiberarReservaStockForm(forms.Form):
+    cantidad = forms.IntegerField(
+        min_value=1,
+        label="Cantidad a liberar",
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Ingrese la cantidad a liberar",
+            }
+        ),
+    )
+    motivo = forms.CharField(
+        max_length=255,
+        label="Motivo",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Motivo de la liberación",
+            }
+        ),
+    )
+    referencia_externa = forms.CharField(
+        max_length=100,
+        required=False,
+        label="Referencia externa",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Ejemplo: cancelación de orden #123",
             }
         ),
     )

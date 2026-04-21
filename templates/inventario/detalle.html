@@ -42,6 +42,15 @@
           <a href="{% url 'inventario:ajustar' inventario.id %}" class="btn btn-soft-danger btn-pill">
             Ajustar stock
           </a>
+          <a href="{% url 'inventario:stock_minimo' inventario.id %}" class="btn btn-soft-light btn-pill">
+            Ajustar stock mínimo
+          </a>
+          <a href="{% url 'inventario:reservar' inventario.id %}" class="btn btn-soft-primary btn-pill">
+            Reservar stock
+          </a>
+          <a href="{% url 'inventario:liberar_reserva' inventario.id %}" class="btn btn-soft-secondary btn-pill">
+            Liberar reserva
+          </a>
         </div>
       </div>
     </div>
